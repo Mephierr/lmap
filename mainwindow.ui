@@ -6,50 +6,86 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>713</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>390</y>
-      <width>231</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Display ports</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="listView">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>90</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-    <property name="gridSize">
-     <size>
-      <width>3</width>
-      <height>3</height>
-     </size>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,1,1,2">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="MinPortLineEdit">
+        <property name="inputMask">
+         <string>00000</string>
+        </property>
+        <property name="text">
+         <string>80</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="MaxPortLineEdit">
+        <property name="inputMask">
+         <string>00000</string>
+        </property>
+        <property name="text">
+         <string>443</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="IPAddressLineEdit">
+        <property name="inputMask">
+         <string>000.000.000.000</string>
+        </property>
+        <property name="text">
+         <string>192.168.0.1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="DisplayPortsButton">
+        <property name="text">
+         <string>Display ports</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTextBrowser" name="OutputTextBrowser"/>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>713</width>
      <height>21</height>
     </rect>
    </property>
@@ -59,7 +95,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>DisplayPortsButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>OnGetOpenedPortsClicked()</slot>
