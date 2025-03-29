@@ -4,6 +4,6 @@
 
 ModelImpl::ModelImpl() {}
 
-int ModelImpl::GetRandomNumber() {
-    return rand();
+Ports ModelImpl::GetOpenedPorts(Port from, Port to) {
+    return {1,2,3};
 }

@@ -12,12 +12,12 @@ void MainWindow::SetPresenter(Presenter* presenter) {
     presenter_ = presenter;
 }
 
-void MainWindow::DisplayNumber(int number) {
-    ui->label->setText(std::to_string(number).c_str());
+void MainWindow::DisplayPorts(QAbstractItemModel* ports) {
+    ui->listView->setModel(ports);
 }
 
-void MainWindow::OnRandomNumberClicked() {
-    presenter_->OnRandomNumberClicked();
+void MainWindow::OnGetOpenedPortsClicked() {
+    presenter_->OnGetOpenedPortsClicked();
 }
 MainWindow::~MainWindow() {
     delete ui;

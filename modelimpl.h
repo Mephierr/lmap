@@ -6,7 +6,7 @@ class ModelImpl : public IModel
 {
 public:
     ModelImpl();
-    int GetRandomNumber();
+    Ports GetOpenedPorts(Port from, Port to) override;
 };
 
 #endif // MODELIMPL_H

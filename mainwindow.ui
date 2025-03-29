@@ -14,41 +14,33 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>180</y>
-      <width>371</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>25</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>370</y>
+      <x>390</x>
+      <y>390</y>
       <width>231</width>
       <height>81</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Display ports</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>90</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="gridSize">
+     <size>
+      <width>3</width>
+      <height>3</height>
+     </size>
     </property>
    </widget>
   </widget>
@@ -70,21 +62,21 @@
    <sender>pushButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>OnRandomNumberClicked()</slot>
+   <slot>OnGetOpenedPortsClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>366</x>
-     <y>406</y>
+     <x>530</x>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
-     <x>601</x>
-     <y>400</y>
+     <x>541</x>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <signal>signal1()</signal>
-  <slot>OnRandomNumberClicked()</slot>
+  <slot>OnGetOpenedPortsClicked()</slot>
  </slots>
 </ui>

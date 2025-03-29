@@ -12,7 +12,7 @@ public:
     void SetMainWindow(MainWindow* main_window);
     void SetModel(IModel* model);
 
-    void OnRandomNumberClicked();
+    void OnGetOpenedPortsClicked();
 private:
     MainWindow* main_window_;
     IModel* model_;

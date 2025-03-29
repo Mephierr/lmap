@@ -3,6 +3,7 @@
 
 #include "presenter.h"
 #include <QMainWindow>
+#include <QAbstractItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,9 +21,9 @@ public:
 
     void SetPresenter(Presenter* presenter);
 
-    void DisplayNumber(int number);
+    void DisplayPorts(QAbstractItemModel* ports);
 public slots:
-    void OnRandomNumberClicked();
+    void OnGetOpenedPortsClicked();
 
 private:
     Ui::MainWindow *ui;
