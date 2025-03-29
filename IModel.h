@@ -7,6 +7,7 @@ using Port = int;
 using Ports = std::vector<Port>;
 class IModel {
 public:
+    virtual ~IModel(){};
     // returns vector of opened ports
     virtual Ports GetOpenedPorts(Port from, Port to) = 0;
 };

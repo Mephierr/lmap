@@ -12,8 +12,8 @@ void MainWindow::SetPresenter(Presenter* presenter) {
     presenter_ = presenter;
 }
 
-void MainWindow::DisplayPorts(QAbstractItemModel* ports) {
-    ui->listView->setModel(ports);
+void MainWindow::DisplayPorts(QString&& ports_str) {
+    ui->OutputTextBrowser->setPlainText(ports_str);
 }
 
 void MainWindow::OnGetOpenedPortsClicked() {

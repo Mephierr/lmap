@@ -118,7 +118,7 @@ private:
 int main(int argc, char** argv) {
     QApplication a(argc, argv);
     MainWindow window;
-    Presenter presenter;
+    Presenter presenter(new OutputFormatter());
     window.SetPresenter(&presenter);
     presenter.SetMainWindow(&window);
     presenter.SetModel(new ModelImpl());

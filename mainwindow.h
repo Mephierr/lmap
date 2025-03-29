@@ -21,7 +21,7 @@ public:
 
     void SetPresenter(Presenter* presenter);
 
-    void DisplayPorts(QAbstractItemModel* ports);
+    void DisplayPorts(QString&& ports_str);
 public slots:
     void OnGetOpenedPortsClicked();
 

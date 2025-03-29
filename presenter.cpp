@@ -3,7 +3,12 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #define MAX_PORT_LENGTH 10
-Presenter::Presenter(){}
+Presenter::Presenter(OutputFormatter* formatter)
+    : output_formatter_(formatter){}
+Presenter::~Presenter() {
+    delete model_;
+    delete output_formatter_;
+}
 void Presenter::SetMainWindow(MainWindow* main_window) {
     main_window_ = main_window;
 }
@@ -13,13 +18,7 @@ void Presenter::SetModel(IModel* model) {
 
 void Presenter::OnGetOpenedPortsClicked() {
     Ports ports = model_->GetOpenedPorts(1, 2); // #TODO: port range
-    QStringList portList;
-    for(Port port : ports) {
-        char a[MAX_PORT_LENGTH];
-        itoa(port, a, MAX_PORT_LENGTH);
-        portList.append(a);
-    }
-    QStringListModel* qports = new QStringListModel();
-    qports->setStringList(portList);
-    main_window_->DisplayPorts(qports);
+    std::string output = output_formatter_->FormatTcpPorts(ports);
+    QString qoutput(output.c_str());
+    main_window_->DisplayPorts(std::move(qoutput));
 }

@@ -6,6 +6,7 @@ class ModelImpl : public IModel
 {
 public:
     ModelImpl();
+    ~ModelImpl() override;
     Ports GetOpenedPorts(Port from, Port to) override;
 };
 
