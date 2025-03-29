@@ -8,7 +8,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 }
 
-MainWindow::~MainWindow()
-{
+void MainWindow::SetPresenter(Presenter* presenter) {
+    presenter_ = presenter;
+}
+
+void MainWindow::DisplayPorts(QString&& ports_str) {
+    ui->OutputTextBrowser->setPlainText(ports_str);
+}
+
+void MainWindow::OnGetOpenedPortsClicked() {
+    presenter_->OnGetOpenedPortsClicked();
+}
+MainWindow::~MainWindow() {
     delete ui;
 }

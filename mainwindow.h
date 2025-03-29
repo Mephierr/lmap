@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "presenter.h"
 #include <QMainWindow>
+#include <QAbstractItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,7 +19,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void SetPresenter(Presenter* presenter);
+
+    void DisplayPorts(QString&& ports_str);
+public slots:
+    void OnGetOpenedPortsClicked();
+
 private:
     Ui::MainWindow *ui;
+
+    Presenter* presenter_;
 };
 #endif // MAINWINDOW_H
