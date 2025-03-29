@@ -41,7 +41,11 @@ public:
 private:
     bool isPortOpen(int port) {
         int sock = socket(AF_INET, SOCK_STREAM, 0);
+#ifdef _WIN_32
         if (sock == INVALID_SOCKET) {
+#else
+        if(sock < 0) {
+#endif
             handleError("Socket creation failed");
             return false;
         }
