@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include "modelimpl.h"
 #include "socket.h"
 #include <unistd.h>
 #include <cerrno>
@@ -116,20 +117,11 @@ private:
 
 int main(int argc, char** argv) {
     QApplication a(argc, argv);
-    std::string ipAddress;
-    int startPort, endPort;
-
-    std::cout << "Enter target IP address: ";
-    std::cin >> ipAddress;
-
-    std::cout << "Enter start port: ";
-    std::cin >> startPort;
-
-    std::cout << "Enter end port: ";
-    std::cin >> endPort;
-
-    PortScanner scanner(ipAddress, startPort, endPort);
-    scanner.scan();
-
+    MainWindow window;
+    Presenter presenter;
+    window.SetPresenter(&presenter);
+    presenter.SetMainWindow(&window);
+    presenter.SetModel(new ModelImpl());
+    window.show();
     return a.exec();
 }

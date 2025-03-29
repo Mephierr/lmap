@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "presenter.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -17,7 +18,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void SetPresenter(Presenter* presenter);
+
+    void DisplayNumber(int number);
+public slots:
+    void OnRandomNumberClicked();
+
 private:
     Ui::MainWindow *ui;
+
+    Presenter* presenter_;
 };
 #endif // MAINWINDOW_H

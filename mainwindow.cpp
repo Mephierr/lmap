@@ -8,7 +8,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 }
 
-MainWindow::~MainWindow()
-{
+void MainWindow::SetPresenter(Presenter* presenter) {
+    presenter_ = presenter;
+}
+
+void MainWindow::DisplayNumber(int number) {
+    ui->label->setText(std::to_string(number).c_str());
+}
+
+void MainWindow::OnRandomNumberClicked() {
+    presenter_->OnRandomNumberClicked();
+}
+MainWindow::~MainWindow() {
     delete ui;
 }
