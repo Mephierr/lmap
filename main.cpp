@@ -2,13 +2,14 @@
 #include <vector>
 #include <string>
 #include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include "socket.h"
 #include <unistd.h>
 #include <cerrno>
 #include <fcntl.h>
 #include <sys/time.h>
+#include "mainwindow.h"
+
+#include <QApplication>
 
 class PortScanner {
 public:
@@ -39,43 +40,43 @@ public:
 private:
     bool isPortOpen(int port) {
         int sock = socket(AF_INET, SOCK_STREAM, 0);
-        if (sock < 0) {
+        if (sock == INVALID_SOCKET) {
             handleError("Socket creation failed");
             return false;
         }
 
-        // Устанавливаем таймаут
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         struct timeval timeout;
         timeout.tv_sec = timeoutMs_ / 1000;
         timeout.tv_usec = (timeoutMs_ % 1000) * 1000;
 
-        if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) {
+        if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout))) {
             handleError("Failed to set send timeout");
             close(sock);
             return false;
         }
 
-        if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) {
+        if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout))) {
             handleError("Failed to set receive timeout");
             close(sock);
             return false;
         }
 
         struct sockaddr_in serverAddr;
-            memset(&serverAddr, 0, sizeof(serverAddr));
-            serverAddr.sin_family = AF_INET;
-            serverAddr.sin_port = htons(port);
+        memset(&serverAddr, 0, sizeof(serverAddr));
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(port);
 
-            if (inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr) <= 0) {
-                handleError("Invalid address / Address not supported");
-                close(sock);
-                return false;
-            }
+        if (inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr) <= 0) {
+            handleError("Invalid address / Address not supported");
+            close(sock);
+            return false;
+        }
 
         int result = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
         if (result < 0) {
             if (errno == ECONNREFUSED || errno == ETIMEDOUT) {
-                // Порт закрыт или таймаут
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 close(sock);
                 return false;
             }
@@ -113,7 +114,8 @@ private:
     std::vector<int> openPorts_;
 };
 
-int main() {
+int main(int argc, char** argv) {
+    QApplication a(argc, argv);
     std::string ipAddress;
     int startPort, endPort;
 
@@ -129,5 +131,5 @@ int main() {
     PortScanner scanner(ipAddress, startPort, endPort);
     scanner.scan();
 
-    return 0;
+    return a.exec();
 }
