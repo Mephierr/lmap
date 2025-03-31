@@ -8,9 +8,7 @@
 #include <cerrno>
 #include <fcntl.h>
 #include <sys/time.h>
-#include "mainwindow.h"
-
-#include <QApplication>
+#include "output_manager.h"
 
 class PortScanner {
 public:
@@ -120,6 +118,7 @@ private:
 };
 
 int main(int argc, char** argv) {
+#ifdef BUILD_WITH_QT
     QApplication a(argc, argv);
     MainWindow window;
     Presenter presenter(new OutputFormatter());
@@ -128,4 +127,7 @@ int main(int argc, char** argv) {
     presenter.SetModel(new ModelImpl());
     window.show();
     return a.exec();
+#else
+    std::cout << "build without qt success." << std::endl;
+#endif
 }
