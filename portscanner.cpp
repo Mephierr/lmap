@@ -36,49 +36,51 @@ const std::vector<int>& PortScanner::getOpenPorts() const {
 
 bool PortScanner::isPortOpen(int port) {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
-#ifdef _WIN_32
-    if (sock == INVALID_SOCKET) {
-#else
-    if(sock < 0) {
-#endif
+    if (sock < 0) {
         handleError("Socket creation failed");
         return false;
     }
 
-    struct timeval timeout;
-    timeout.tv_sec = timeoutMs_ / 1000;
-    timeout.tv_usec = (timeoutMs_ % 1000) * 1000;
-
-    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout))) {
-        handleError("Failed to set send timeout");
-        close(sock);
-        return false;
-    }
-
-    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout))) {
-        handleError("Failed to set receive timeout");
-        close(sock);
-        return false;
-    }
+    // Устанавливаем non-blocking режим
+    int flags = fcntl(sock, F_GETFL, 0);
+    fcntl(sock, F_SETFL, flags | O_NONBLOCK);
 
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
-
+    
     if (inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr) <= 0) {
-        handleError("Invalid address / Address not supported");
+        handleError("Invalid address");
         close(sock);
         return false;
     }
 
+    // Пробуем подключиться
     int result = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    
     if (result < 0) {
-        if (errno == ECONNREFUSED || errno == ETIMEDOUT) {
-            close(sock);
-            return false;
+        if (errno == EINPROGRESS) {
+            // Используем select для таймаута
+            fd_set fdset;
+            struct timeval tv;
+            
+            FD_ZERO(&fdset);
+            FD_SET(sock, &fdset);
+            tv.tv_sec = timeoutMs_ / 1000;
+            tv.tv_usec = (timeoutMs_ % 1000) * 1000;
+            
+            if (select(sock + 1, nullptr, &fdset, nullptr, &tv) == 1) {
+                int so_error;
+                socklen_t len = sizeof(so_error);
+                getsockopt(sock, SOL_SOCKET, SO_ERROR, &so_error, &len);
+                
+                if (so_error == 0) {
+                    close(sock);
+                    return true;
+                }
+            }
         }
-        handleError("Connection failed");
         close(sock);
         return false;
     }
