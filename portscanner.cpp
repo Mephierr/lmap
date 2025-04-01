@@ -48,7 +48,7 @@ void PortScanner::scan() {
 }
 
 bool PortScanner::isPortOpen(int port) {
-    // Стандартная реализация (как в вашем исходном коде)
+    // Стандартная реализация
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         handleError("Socket creation failed");
