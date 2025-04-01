@@ -18,17 +18,12 @@ set(PROJECT_SOURCES
     socket.h
     outputformatter.h outputformatter.cpp)
 if(BUILD_WITH_QT)
-    message("building with qt")
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
         qt_presenter.h qt_presenter.cpp
         )
-endif()
-
-if(BUILD_WITH_QT) 
-    message("AFEOGJOOIJ$JIOGOAG(%U)(Q@$%U)@*U$)%@*J$TJIHO$WJIO")
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -69,7 +64,7 @@ target_link_libraries(lmap PRIVATE ${Import})
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(BUILD_WITH_QT)
-    if(AND ${QT_VERSION} VERSION_LESS 6.1.0)
+    if(${QT_VERSION} VERSION_LESS 6.1.0)
         set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.lmap)
     endif()
 endif()
