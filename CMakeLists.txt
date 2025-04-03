@@ -1,31 +1,36 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(lmap VERSION 0.1 LANGUAGES CXX)
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
 option(BUILD_WITH_QT "require Qt to build" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 set(PROJECT_SOURCES
     main.cpp
-    IModel.h
+    i_model.h
     modelimpl.h modelimpl.cpp
     socket.h
+    cli_presenter.cpp cli_presenter.h
     outputformatter.h outputformatter.cpp)
+
+set(Import )
 if(BUILD_WITH_QT)
+    set (Import ${Import} Qt${QT_VERSION_MAJOR}::Widgets)
+    set(CMAKE_AUTOUIC ON)
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTORCC ON)
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
         qt_presenter.h qt_presenter.cpp
         )
-    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+    # list(APPEND CMAKE_PREFIX_PATH "/usr/lib")
+    find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Widgets Core)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
+    message(STATUS "Qt6Core found: ${Qt6Core_FOUND}")
+    message(STATUS "Qt6_DIR: ${Qt6_DIR}")
+    message(STATUS "Qt6Core_DIR: ${Qt6Core_DIR}")
 
     if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(lmap
@@ -48,26 +53,17 @@ if(BUILD_WITH_QT)
                 )
         endif()
     endif()
+    if(${QT_VERSION} VERSION_LESS 6.1.0)
+        set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.lmap)
+    endif()   
 else()
     add_executable(lmap ${PROJECT_SOURCES})
 endif()
-set(Import )
 if(WIN32)
     set (Import ${Import} wsock32 ws2_32)
 endif()
-if(BUILD_WITH_QT) 
-    set (Import ${Import} Qt${QT_VERSION_MAJOR}::Widgets)
-endif()
-target_link_libraries(lmap PRIVATE ${Import})
+target_link_libraries(lmap PUBLIC ${Import})
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(BUILD_WITH_QT)
-    if(${QT_VERSION} VERSION_LESS 6.1.0)
-        set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.lmap)
-    endif()
-endif()
 set_target_properties(lmap PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -83,6 +79,8 @@ install(TARGETS lmap
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(lmap)
+if(BUILD_WITH_QT)
+    if(QT_VERSION_MAJOR EQUAL 6)
+        qt_finalize_executable(lmap)
+    endif()
 endif()

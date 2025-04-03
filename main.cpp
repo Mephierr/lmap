@@ -2,7 +2,9 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include "cli_presenter.h"
 #include "modelimpl.h"
+#include "outputformatter.h"
 #include "socket.h"
 #include <unistd.h>
 #include <cerrno>
@@ -128,6 +130,10 @@ int main(int argc, char** argv) {
     window.show();
     return a.exec();
 #else
-    std::cout << "build without qt success." << std::endl;
+    IModel* model = new ModelImpl();
+    OutputFormatter* formatter = new OutputFormatter();
+    CliPresenter presenter(model, formatter);
+    presenter.exec(argc, argv);
+    return 0;
 #endif
 }
