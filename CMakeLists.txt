@@ -9,7 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-msse4.2" COMPILER_SUPPORTS_SSE42)
 set(PROJECT_SOURCES
-    main.cpp
     i_model.h
     modelimpl.h modelimpl.cpp
     socket.h
@@ -24,6 +23,7 @@ if(BUILD_WITH_QT)
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_AUTORCC ON)
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        gui_main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
@@ -31,12 +31,12 @@ if(BUILD_WITH_QT)
     )
     find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets Core)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
-    message(${QT_VERSION_MAJOR})
     qt_add_executable(lmap
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 else()
+    set(PROJECT_SOURCES ${PROJECT_SOURCES} cli_main.cpp)
     add_executable(lmap ${PROJECT_SOURCES})
 endif()
 
