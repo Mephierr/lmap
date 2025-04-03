@@ -1,6 +1,6 @@
 #ifndef PRESENTER_H
 #define PRESENTER_H
-#include "IModel.h"
+#include "i_model.h"
 #include "outputformatter.h"
 #include <QObject>
 class MainWindow;

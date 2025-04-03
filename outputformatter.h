@@ -1,7 +1,7 @@
 #ifndef TCPPORTSFORMATTER_H
 #define TCPPORTSFORMATTER_H
 
-#include "IModel.h"
+#include "i_model.h"
 #include <string>
 class OutputFormatter
 {

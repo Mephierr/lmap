@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "presenter.h"
+#include "qt_presenter.h"
 #include <QMainWindow>
 #include <QAbstractItemModel>
 
