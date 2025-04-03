@@ -14,8 +14,7 @@ set(PROJECT_SOURCES
     modelimpl.h modelimpl.cpp
     socket.h
     cli_presenter.cpp cli_presenter.h
-        portscanner.cpp       
-        portscanner.h         
+    portscanner.cpp portscanner.h         
     outputformatter.h outputformatter.cpp)
 
 set(Import )
@@ -29,58 +28,18 @@ if(BUILD_WITH_QT)
         mainwindow.h
         mainwindow.ui
         qt_presenter.h qt_presenter.cpp
-)
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    )
+    find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets Core)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
+    message(${QT_VERSION_MAJOR})
     qt_add_executable(lmap
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        socket.h
-        presenter.h presenter.cpp
-        IModel.h
-        modelimpl.h modelimpl.cpp
-        outputformatter.h outputformatter.cpp
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET lmap APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(lmap SHARED
-            ${PROJECT_SOURCES}
-        )
-    # list(APPEND CMAKE_PREFIX_PATH "/usr/lib")
-    find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Widgets Core)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
-
-    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-        qt_add_executable(lmap
-            MANUAL_FINALIZATION
-            ${PROJECT_SOURCES})
-        # Define target properties for Android with Qt 6 as:
-        #    set_property(TARGET lmap APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-        #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-        # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-    else()
-        if(ANDROID)
-            add_library(lmap SHARED
-                ${PROJECT_SOURCES}
-                )
-            # Define properties for Android with Qt 5 after find_package() calls as:
-            #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-        else()
-            add_executable(lmap
-                ${PROJECT_SOURCES}
-                )
-        endif()
-    endif()
-    if(${QT_VERSION} VERSION_LESS 6.1.0)
-        set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.lmap)
-    endif()   
 else()
     add_executable(lmap ${PROJECT_SOURCES})
 endif()
+
 # ТЕПЕРЬ, применяем оптимизации SSE
 if(COMPILER_SUPPORTS_SSE42)
     message(STATUS "SSE4.2 supported, enabling optimizations")
