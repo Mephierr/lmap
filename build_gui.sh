@@ -1,4 +1,4 @@
-mkdir build/gui_debug
+mkdir build/gui_debug -p
 cd build/gui_debug/
 cmake  ../.. -DBUILD_WITH_QT=ON
 cmake --build . --target all
