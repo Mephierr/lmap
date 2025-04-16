@@ -8,7 +8,13 @@ CliPresenter::~CliPresenter() {
     delete formatter_;
 }
 void CliPresenter::exec(int argc, char** argv) {
-    Ports ports = {1,2,3};
-    model_->GetOpenedPorts(1,2);
+    Port from, to;
+    if(argc != 4) {
+        std::cout << "Usage:$ lmap [IPv4] [from port] [to port]" << std::endl;
+        return;
+    }
+    from = atoi(argv[2]);
+    to = atoi(argv[3]);
+    Ports ports = model_->GetOpenedPorts(from, to);
     std::cout << formatter_->FormatTcpPorts(ports) << std::endl;
 }

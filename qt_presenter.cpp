@@ -17,7 +17,9 @@ void Presenter::SetModel(IModel* model) {
 }
 
 void Presenter::OnGetOpenedPortsClicked() {
-    Ports ports = model_->GetOpenedPorts(1, 2); // #TODO: port range
+    QString from_str = main_window_->GetFromPort(),
+            to_str   = main_window_->GetToPort();
+    Ports ports = model_->GetOpenedPorts(from_str.toInt(), to_str.toInt()); // #TODO: port range
     std::string output = output_formatter_->FormatTcpPorts(ports);
     QString qoutput(output.c_str());
     main_window_->DisplayPorts(std::move(qoutput));

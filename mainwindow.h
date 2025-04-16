@@ -22,6 +22,8 @@ public:
     void SetPresenter(Presenter* presenter);
 
     void DisplayPorts(QString&& ports_str);
+    QString GetFromPort();
+    QString GetToPort();
 public slots:
     void OnGetOpenedPortsClicked();
 

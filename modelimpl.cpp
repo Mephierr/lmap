@@ -6,5 +6,8 @@ ModelImpl::ModelImpl() {}
 ModelImpl::~ModelImpl() {}
 
 Ports ModelImpl::GetOpenedPorts(Port from, Port to) {
-    return {1,2,3};
+    Ports ports(to - from + 1);
+    for(int i = from; i <= to; ++i)
+        ports[i - from] = i;
+    return ports;
 }
