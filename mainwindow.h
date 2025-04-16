@@ -24,6 +24,7 @@ public:
     void DisplayPorts(QString&& ports_str);
     QString GetFromPort();
     QString GetToPort();
+    QString GetScannedIP();
 public slots:
     void OnGetOpenedPortsClicked();
 

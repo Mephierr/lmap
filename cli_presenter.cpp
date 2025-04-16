@@ -9,12 +9,14 @@ CliPresenter::~CliPresenter() {
 }
 void CliPresenter::exec(int argc, char** argv) {
     Port from, to;
+    std::string ipaddress;
     if(argc != 4) {
         std::cout << "Usage:$ lmap [IPv4] [from port] [to port]" << std::endl;
         return;
     }
+    ipaddress = argv[1];
     from = atoi(argv[2]);
     to = atoi(argv[3]);
-    Ports ports = model_->GetOpenedPorts(from, to);
+    Ports ports = model_->GetOpenedPorts(ipaddress, from, to);
     std::cout << formatter_->FormatTcpPorts(ports) << std::endl;
 }

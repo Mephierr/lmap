@@ -7,7 +7,7 @@ class ModelImpl : public IModel
 public:
     ModelImpl();
     ~ModelImpl() override;
-    Ports GetOpenedPorts(Port from, Port to) override;
+    Ports GetOpenedPorts(const IPAddress& address, Port from, Port to) override;
 };
 
 #endif // MODELIMPL_H

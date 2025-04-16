@@ -5,7 +5,8 @@
 ModelImpl::ModelImpl() {}
 ModelImpl::~ModelImpl() {}
 
-Ports ModelImpl::GetOpenedPorts(Port from, Port to) {
+Ports ModelImpl::GetOpenedPorts(const IPAddress& address, Port from, Port to) {
+    //aboba
     Ports ports(to - from + 1);
     for(int i = from; i <= to; ++i)
         ports[i - from] = i;

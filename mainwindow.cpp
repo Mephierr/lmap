@@ -21,6 +21,9 @@ QString MainWindow::GetFromPort() {
 QString MainWindow::GetToPort() {
     return ui->MaxPortLineEdit->text();
 }
+QString MainWindow::GetScannedIP() {
+    return ui->IPAddressLineEdit->text();
+}
 
 void MainWindow::OnGetOpenedPortsClicked() {
     presenter_->OnGetOpenedPortsClicked();
