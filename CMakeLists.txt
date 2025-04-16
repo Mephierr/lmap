@@ -5,6 +5,7 @@ option(BUILD_WITH_QT "require Qt to build" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_FLAGS "-g")
 # Проверка поддержки SSE4.2 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-msse4.2" COMPILER_SUPPORTS_SSE42)

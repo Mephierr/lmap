@@ -46,8 +46,8 @@ void PortScanner::scan() {
 
 bool PortScanner::isPortOpen(int port) {
     // Стандартная реализация
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
+    int sock = sock::socketInitNonblock(AF_INET, SOCK_STREAM, 0);
+    if (sock::isFailure(sock)) {
         handleError("Socket creation failed");
         return false;
     }
@@ -65,26 +65,25 @@ bool PortScanner::isPortOpen(int port) {
     serverAddr.sin_port = htons(port);
 
     if (inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr) <= 0) {
-        close(sock);
+        sock::socketDestroy(sock);
         return false;
     }
 
     if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
-        close(sock);
+        sock::socketDestroy(sock);
         return false;
     }
 
-    close(sock);
+    sock::socketDestroy(sock);
     return true;
 }
 
-#ifdef __SSE4_2__
+#ifdef __SSE4_2__ 
 #include <immintrin.h>
 bool PortScanner::isPortOpenOptimized(int port) {
     // Оптимизированная реализация с SSE4.2
-    int sock = sock::socketInitNonblock(AF_INET,
-                                           SOCK_STREAM, 0);
-    if (sock < 0) {
+    int sock = sock::socketInitNonblock(AF_INET, SOCK_STREAM, 0);
+    if (sock::isFailure(sock)) {
         handleError("Socket creation failed");
         return false;
     }
@@ -101,7 +100,7 @@ bool PortScanner::isPortOpenOptimized(int port) {
     __m128i ip_addr = _mm_setzero_si128();
     if (_mm_extract_epi32(_mm_cvtsi32_si128(
         inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr)), 0) <= 0) {
-        close(sock);
+        sock::socketDestroy(sock);
         return false;
     }
 
@@ -116,7 +115,7 @@ bool PortScanner::isPortOpenOptimized(int port) {
     // Non-blocking connect
     if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
         if (errno != EINPROGRESS) {
-            close(sock);
+            sock::socketDestroy(sock);
             return false;
         }
 
@@ -128,12 +127,12 @@ bool PortScanner::isPortOpenOptimized(int port) {
             int so_error;
             socklen_t len = sizeof(so_error);
             sock::getsockopt(sock, SOL_SOCKET, SO_ERROR, &so_error, &len);
-            close(sock);
+            sock::socketDestroy(sock);
             return so_error == 0;
         }
     }
 
-    close(sock);
+    sock::socketDestroy(sock);
     return true;
 }
 #else

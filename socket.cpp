@@ -16,7 +16,7 @@ int destroySockets() {
     return 0;
 #endif
 }
-int socket(int af, int type, int protocol) {
+int socketInit(int af, int type, int protocol) {
     return socket(af, type, protocol);
 }
 int socketInitNonblock(int af, int type, int protocol) {
@@ -26,11 +26,18 @@ int socketInitNonblock(int af, int type, int protocol) {
     ioctlsocket(sock, FIONBIO, &mode);
     return sock;
 #else
-    return socket(af, type | SOCK_NONBLOCK, 0);
+    return socket(af, type | SOCK_NONBLOCK, protocol);
 #endif
 }
 void socketDestroy(int socket) {
     close(socket);
+}
+bool isFailure(int sock) {
+#ifdef _WIN32
+    return sock == SOCKET_ERROR;
+#else
+    return sock == -1;
+#endif
 }
 void setsockopt(int sock,
                 int level,

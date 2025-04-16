@@ -18,11 +18,12 @@
 #endif
 
 namespace sock {
-    int initiailizeSockets();
+    int initializeSockets();
     int destroySockets();
     int socketInit(int af, int type, int protocol);
     int socketInitNonblock(int af, int type, int protocol);
-    void socketDestroy();
+    void socketDestroy(int sock);
+    bool isFailure(int sock);
     void setsockopt(int sock,
                     int level,
                     int optname,
