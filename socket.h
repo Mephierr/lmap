@@ -32,5 +32,10 @@ namespace sock {
                    int optname,
                    void* optval,
                    int* optlen);
+    void getsockopt(int sock,
+                   int level,
+                   int optname,
+                   void* optval,
+                   unsigned int* optlen);
 }
 #endif

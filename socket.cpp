@@ -47,10 +47,13 @@ void getsockopt(int sock,
                int optname,
                void* optval,
                int* optlen) {
-#ifdef _WIN32
     getsockopt(sock, level, optname, optval, optlen);
-#else
-    getsockopt(sock, level, optname, optval, *optlen);
-#endif
+}
+void getsockopt(int sock,
+               int level,
+               int optname,
+               void* optval,
+               unsigned int* optlen) {
+    getsockopt(sock, level, optname, optval, optlen);
 }
 }
