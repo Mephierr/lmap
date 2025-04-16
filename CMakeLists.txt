@@ -11,7 +11,7 @@ check_cxx_compiler_flag("-msse4.2" COMPILER_SUPPORTS_SSE42)
 set(PROJECT_SOURCES
     i_model.h
     modelimpl.h modelimpl.cpp
-    socket.h
+    socket.h socket.cpp
     cli_presenter.cpp cli_presenter.h
     portscanner.cpp portscanner.h         
     outputformatter.h outputformatter.cpp)
