@@ -56,9 +56,9 @@ bool PortScanner::isPortOpen(int port) {
     timeout.tv_sec = timeoutMs_ / 1000;
     timeout.tv_usec = (timeoutMs_ % 1000) * 1000;
 
-    sock::setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
-    sock::setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-
+    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+    
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
@@ -82,7 +82,7 @@ bool PortScanner::isPortOpen(int port) {
 #include <immintrin.h>
 bool PortScanner::isPortOpenOptimized(int port) {
     // Оптимизированная реализация с SSE4.2
-    int sock = sock::socketInitNonblock(AF_INET, SOCK_STREAM, 0);
+    int sock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if (sock::isFailure(sock)) {
         handleError("Socket creation failed");
         return false;
@@ -109,8 +109,8 @@ bool PortScanner::isPortOpenOptimized(int port) {
         .tv_sec = timeoutMs_ / 1000,
         .tv_usec = (timeoutMs_ % 1000) * 1000
     };
-    sock::setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
-    sock::setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
     // Non-blocking connect
     if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
@@ -126,7 +126,7 @@ bool PortScanner::isPortOpenOptimized(int port) {
         if (select(sock + 1, nullptr, &fdset, nullptr, &tv) == 1) {
             int so_error;
             socklen_t len = sizeof(so_error);
-            sock::getsockopt(sock, SOL_SOCKET, SO_ERROR, &so_error, &len);
+            getsockopt(sock, SOL_SOCKET, SO_ERROR, &so_error, &len);
             sock::socketDestroy(sock);
             return so_error == 0;
         }
