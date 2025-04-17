@@ -6,6 +6,5 @@ int main(int argc, char** argv) {
     IModel* model = new ModelImpl();
     OutputFormatter* formatter = new OutputFormatter();
     CliPresenter presenter(model, formatter);
-    presenter.exec(argc, argv);
-    return 0;
+    return presenter.exec(argc, argv);
 }

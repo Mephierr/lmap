@@ -4,10 +4,7 @@
 #include <unistd.h>
 #include <cerrno>
 #include <fcntl.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include "socket.h"
 #include <algorithm>
 
 // Проверка поддержки SSE4.2
@@ -49,8 +46,8 @@ void PortScanner::scan() {
 
 bool PortScanner::isPortOpen(int port) {
     // Стандартная реализация
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
+    int sock = sock::socketInitNonblock(AF_INET, SOCK_STREAM, 0);
+    if (sock::isFailure(sock)) {
         handleError("Socket creation failed");
         return false;
     }
@@ -59,8 +56,8 @@ bool PortScanner::isPortOpen(int port) {
     timeout.tv_sec = timeoutMs_ / 1000;
     timeout.tv_usec = (timeoutMs_ % 1000) * 1000;
 
-    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
-    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+    sock::setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+    sock::setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
 
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
@@ -68,25 +65,25 @@ bool PortScanner::isPortOpen(int port) {
     serverAddr.sin_port = htons(port);
 
     if (inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr) <= 0) {
-        close(sock);
+        sock::socketDestroy(sock);
         return false;
     }
 
     if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
-        close(sock);
+        sock::socketDestroy(sock);
         return false;
     }
 
-    close(sock);
+    sock::socketDestroy(sock);
     return true;
 }
 
-#ifdef __SSE4_2__
+#ifdef __SSE4_2__ 
 #include <immintrin.h>
 bool PortScanner::isPortOpenOptimized(int port) {
     // Оптимизированная реализация с SSE4.2
-    int sock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
-    if (sock < 0) {
+    int sock = sock::socketInitNonblock(AF_INET, SOCK_STREAM, 0);
+    if (sock::isFailure(sock)) {
         handleError("Socket creation failed");
         return false;
     }
@@ -103,7 +100,7 @@ bool PortScanner::isPortOpenOptimized(int port) {
     __m128i ip_addr = _mm_setzero_si128();
     if (_mm_extract_epi32(_mm_cvtsi32_si128(
         inet_pton(AF_INET, targetIP_.c_str(), &serverAddr.sin_addr)), 0) <= 0) {
-        close(sock);
+        sock::socketDestroy(sock);
         return false;
     }
 
@@ -112,13 +109,13 @@ bool PortScanner::isPortOpenOptimized(int port) {
         .tv_sec = timeoutMs_ / 1000,
         .tv_usec = (timeoutMs_ % 1000) * 1000
     };
-    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
-    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    sock::setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    sock::setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
     // Non-blocking connect
     if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
         if (errno != EINPROGRESS) {
-            close(sock);
+            sock::socketDestroy(sock);
             return false;
         }
 
@@ -129,13 +126,13 @@ bool PortScanner::isPortOpenOptimized(int port) {
         if (select(sock + 1, nullptr, &fdset, nullptr, &tv) == 1) {
             int so_error;
             socklen_t len = sizeof(so_error);
-            getsockopt(sock, SOL_SOCKET, SO_ERROR, &so_error, &len);
-            close(sock);
+            sock::getsockopt(sock, SOL_SOCKET, SO_ERROR, &so_error, &len);
+            sock::socketDestroy(sock);
             return so_error == 0;
         }
     }
 
-    close(sock);
+    sock::socketDestroy(sock);
     return true;
 }
 #else

@@ -8,14 +8,4 @@ If you are lucky, you don't have any problems with downloading it from the [offi
 ## Build using Qt Creator
 After you have finished with installation (you probably need to make an account using VPN), launch Qt and press **Open Project...**, select your project's directory, and click on the **CMakeLists.txt** file. Press the Hammer button in the bottom-left corner of the IDE. Make sure that build finished successfully. Now you can run an application.
 ## Build using Bash
-If you are the nerdos and want to build the application using bash and CMake, you can ethier use bash scripts `build_debug.sh` and `run.sh` or do it manually, following next steps: 
-* `cd` to your directory with the application.
-* `mkdir build && cd build`
-* You need to add some environment variables to show cmake where the Qt is installed. You can skip this step if you already built the application with Qt Creator. 
-```bash
-export Qt6_DIR=/home/USERNAME/Qt/VERSION/gcc_64/lib/cmake/Qt6
-export Qt5_DIR=/home/USERNAME/Qt/VERSION/gcc_64/lib/cmake/Qt6
-```
-* Configure cmake using `cmake ..`.
-* Build the project using `cmake --build . --target all`
-Your executable will be in the build directory called `lmap`.
+If you are the nerdos and want to build the application using bash and CMake, you can ethier use bash scripts `build_gui.sh` or `build_cli.sh` to build with Qt user interface or with cli interface respectively.

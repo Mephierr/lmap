@@ -15,6 +15,15 @@ void MainWindow::SetPresenter(Presenter* presenter) {
 void MainWindow::DisplayPorts(QString&& ports_str) {
     ui->OutputTextBrowser->setPlainText(ports_str);
 }
+QString MainWindow::GetFromPort() {
+    return ui->MinPortLineEdit->text();
+}
+QString MainWindow::GetToPort() {
+    return ui->MaxPortLineEdit->text();
+}
+QString MainWindow::GetScannedIP() {
+    return ui->IPAddressLineEdit->text();
+}
 
 void MainWindow::OnGetOpenedPortsClicked() {
     presenter_->OnGetOpenedPortsClicked();

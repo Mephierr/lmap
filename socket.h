@@ -17,6 +17,26 @@
     #include <unistd.h> /* Needed for close() */
 #endif
 
-int socketInit();
-int socketDestroy();
+namespace sock {
+    int initializeSockets();
+    int destroySockets();
+    int socketInit(int af, int type, int protocol);
+    int socketInitNonblock(int af, int type, int protocol);
+    void socketDestroy(int sock);
+    bool isFailure(int sock);
+    void setsockopt(int sock,
+                    int level,
+                    int optname,
+                    const void* optval, int optlen);
+    void getsockopt(int sock,
+                   int level,
+                   int optname,
+                   void* optval,
+                   int* optlen);
+    void getsockopt(int sock,
+                   int level,
+                   int optname,
+                   void* optval,
+                   unsigned int* optlen);
+}
 #endif
